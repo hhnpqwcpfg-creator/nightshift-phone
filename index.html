@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Night Shift Phone Feed</title>
+  <style>
+    :root {
+      --bg: #0d1112;
+      --panel: #141a1c;
+      --panel-2: #1a2225;
+      --line: #283235;
+      --text: #dbe3e1;
+      --muted: #93a19d;
+      --accent: #b2c9b0;
+      --warning: #d6b37d;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: #0b0f10;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 24px 12px;
+    }
+    .phone {
+      width: 390px;
+      max-width: 100%;
+      background: linear-gradient(180deg, #111718, #0f1416);
+      border: 1px solid #2a3437;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px 8px;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid #1f282b;
+      background: rgba(255,255,255,.015);
+      letter-spacing: .2px;
+    }
+    .header {
+      padding: 12px 14px;
+      border-bottom: 1px solid #1f282b;
+      background: rgba(255,255,255,.02);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+    .header p {
+      margin: 3px 0 0;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .feed {
+      height: 780px;
+      overflow-y: auto;
+      padding: 10px;
+      background:
+        radial-gradient(circle at 20% -10%, rgba(201, 225, 176, .06), transparent 40%),
+        radial-gradient(circle at 90% 10%, rgba(215, 180, 123, .05), transparent 35%),
+        #0d1112;
+    }
+    .feed::-webkit-scrollbar { width: 10px; }
+    .feed::-webkit-scrollbar-thumb { background: #273033; border-radius: 8px; }
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      margin: 0 0 10px;
+    }
+    .card .meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .card p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .thread { padding: 8px 0 2px; }
+    .msg {
+      margin: 0 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      max-width: 92%;
+    }
+    .msg .name { font-size: 10px; color: var(--muted); }
+    .bubble {
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      line-height: 1.35;
+      background: rgba(255,255,255,.02);
+      white-space: pre-wrap;
+    }
+    .msg.you { margin-left: auto; align-items: flex-end; }
+    .msg.you .bubble {
+      background: rgba(178, 201, 176, .08);
+      border-color: #33413f;
+    }
+    .msg.sam .bubble { background: rgba(255,255,255,.015); }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 2px 10px;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #223033;
+    }
+    .notif {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px dashed #304043;
+      background: rgba(214, 179, 125, .05);
+      font-size: 11px;
+      color: #d9c3a0;
+      margin-bottom: 10px;
+    }
+    .search-item, .note-line, .news-item {
+      padding: 7px 8px;
+      border-top: 1px solid rgba(255,255,255,.04);
+      font-size: 12px;
+    }
+    .search-item:first-of-type,
+    .note-line:first-of-type,
+    .news-item:first-of-type { border-top: 0; }
+    .sub { color: var(--muted); font-size: 10px; margin-top: 2px; }
+    .gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .ph {
+      aspect-ratio: 1.1;
+      border-radius: 10px;
+      border: 1px solid #2a3336;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
+        radial-gradient(circle at 70% 20%, rgba(229, 215, 147, .15), transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(124, 154, 136, .12), transparent 55%),
+        #11181a;
+      position: relative;
+      overflow: hidden;
+    }
+    .ph::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 8px;
+      bottom: 6px;
+      font-size: 10px;
+      color: rgba(219,227,225,.8);
+      letter-spacing: .2px;
+    }
+    .tiny {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+    .sticky {
+      border-left: 3px solid var(--warning);
+      padding-left: 8px;
+    }
+    .footer-space { height: 8px; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="status">
+      <span>03:12</span>
+      <span>Night Shift • Low Power</span>
+      <span>17%</span>
+    </div>
+    <div class="header">
+      <h1>Personal Feed</h1>
+      <p>In-world fragments • swipe/scroll • subtle clues</p>
+    </div>
+    <div class="feed">
+      <div class="notif">Missed call (1): <strong>Sam</strong> • 01:47</div>
+
+      <div class="card">
+        <div class="meta"><span>Messages</span><span>Sam • Yesterday</span></div>
+        <div class="thread">
+          <div class="msg sam">
+            <div class="name">Sam</div>
+            <div class="bubble">You don’t need to explain it again.</div>
+          </div>
+          <div class="msg sam">
+            <div class="name">Sam</div>
+            <div class="bubble">I said I heard you.</div>
+          </div>
+          <div class="msg you">
+            <div class="name">You</div>
+            <div class="bubble">I wasn’t shouting.</div>
+          </div>
+          <div class="msg sam">
+            <div class="name">Sam</div>
+            <div class="bubble">Okay.</div>
+          </div>
+          <div class="msg sam">
+            <div class="name">Sam</div>
+            <div class="bubble">I’m at Mum’s for a bit. Feed the plant if you remember.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Search</span><span>Recent</span></div>
+        <div class="search-item">how long does adrenalin stay in your body<div class="sub">1:13 AM</div></div>
+        <div class="search-item">can you crack a phone screen by throwing keys<div class="sub">1:16 AM</div></div>
+        <div class="search-item">night shift sleep getting angry<div class="sub">1:22 AM</div></div>
+        <div class="search-item">petrol station flowers open 24 hours near me<div class="sub">1:28 AM</div></div>
+      </div>
+
+      <div class="divider">Local noise</div>
+
+      <div class="card">
+        <div class="meta"><span>Community Group</span><span>Bresten Local / 02:04</span></div>
+        <h2>Road by the retail park flooded again</h2>
+        <p>Thread’s full of dashcam clips and people arguing about whose fault weather is.</p>
+        <div class="tiny">Top comment preview: “Council can’t even clear drains but they can paint new lines.”</div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Saved Post</span><span>Video • not played</span></div>
+        <h2>“Routine. Sleep. Discipline.”</h2>
+        <p>Thumbnail only. A man in a fitted quarter-zip pointing at a whiteboard. You saved it at 03:51 a week ago and never opened it.</p>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Notes</span><span>Untitled</span></div>
+        <h2 class="sticky">draft</h2>
+        <div class="note-line">need to stop doing the thing where i go quiet then go loud</div>
+        <div class="note-line">night makes everything feel deserved</div>
+        <div class="note-line">buy card (not funny one)</div>
+        <div class="note-line">say sorry without “but”</div>
+      </div>
+
+      <div class="divider">Work fragments</div>
+
+      <div class="card">
+        <div class="meta"><span>Photos</span><span>Camera Roll • 4 items</span></div>
+        <h2>Unsent / work</h2>
+        <p>Accidental pocket snaps and late-shift evidence. Nothing framed properly.</p>
+        <div class="gallery">
+          <div class="ph" data-label="break-room notice"></div>
+          <div class="ph" data-label="wet floor by tills"></div>
+          <div class="ph" data-label="receipt in Kev's bin"></div>
+          <div class="ph" data-label="back door keypad"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Voice Memo Transcript</span><span>Auto text • 00:41</span></div>
+        <h2>car park</h2>
+        <p>[wind / rain] ...you can’t just stand there like that... I’m working... no, don’t start... I said I’m working.</p>
+        <div class="tiny">Transcript confidence: low</div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>News</span><span>For You</span></div>
+        <div class="news-item">Cost of living rises again as overnight workers report worse sleep and mental health<div class="sub">long read • opened 12%</div></div>
+        <div class="news-item">Retail chain to trial “frictionless” tills in more stores<div class="sub">shared by no one you know</div></div>
+        <div class="news-item">Opinion: We keep calling burnout a personal failure<div class="sub">saved</div></div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Messages</span><span>Sam • 3 weeks ago</span></div>
+        <div class="thread">
+          <div class="msg sam">
+            <div class="name">Sam</div>
+            <div class="bubble">Can you stop bringing work home in your head</div>
+          </div>
+          <div class="msg you">
+            <div class="name">You</div>
+            <div class="bubble">I leave at 7 and still feel like i’m there at 11</div>
+          </div>
+          <div class="msg sam">
+            <div class="name">Sam</div>
+            <div class="bubble">I know. I’m not your manager. I’m on your side.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Shopping</span><span>Basket (unsent)</span></div>
+        <h2>Late-night cart</h2>
+        <p>Birthday card, cheap flowers, plasters, paracetamol, dishwasher tablets.</p>
+        <div class="tiny">Last edited: 00:58 • checkout not completed</div>
+      </div>
+
+      <div class="notif">New notification: <strong>Battery health warning</strong> • “Service recommended”</div>
+      <div class="footer-space"></div>
+    </div>
+  </div>
+</body>
+</html>
