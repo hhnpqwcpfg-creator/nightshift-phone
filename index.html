@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Night Shift Phone Feed</title>
+  <title>Phone</title>
   <style>
     :root {
       --bg: #0d1112;
@@ -13,186 +13,168 @@
       --text: #dbe3e1;
       --muted: #93a19d;
       --accent: #b2c9b0;
-      --warning: #d6b37d;
+      --warn: #d6b37d;
+      --danger: #d19797;
     }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
       background: #0b0f10;
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
     }
     body {
       display: flex;
       justify-content: center;
-      padding: 24px 12px;
+      padding: 18px 10px;
     }
     .phone {
       width: 390px;
       max-width: 100%;
-      background: linear-gradient(180deg, #111718, #0f1416);
-      border: 1px solid #2a3437;
-      border-radius: 26px;
+      border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      border: 1px solid #2a3437;
+      background: linear-gradient(180deg, #111718, #0f1416);
+      box-shadow: 0 18px 48px rgba(0,0,0,.45);
     }
     .status {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       padding: 10px 14px 8px;
-      font-size: 12px;
-      color: var(--muted);
       border-bottom: 1px solid #1f282b;
-      background: rgba(255,255,255,.015);
-      letter-spacing: .2px;
+      display:flex;
+      justify-content:space-between;
+      font-size:12px;
+      color:var(--muted);
     }
-    .header {
-      padding: 12px 14px;
+    .lock {
+      padding: 14px;
       border-bottom: 1px solid #1f282b;
       background: rgba(255,255,255,.02);
     }
-    .header h1 {
-      margin: 0;
-      font-size: 15px;
+    .time {
+      font-size: 28px;
       font-weight: 600;
-      letter-spacing: .2px;
+      line-height: 1;
+      letter-spacing: .5px;
     }
-    .header p {
-      margin: 3px 0 0;
-      font-size: 11px;
+    .date {
+      margin-top: 5px;
       color: var(--muted);
+      font-size: 11px;
+    }
+    .notif {
+      margin-top: 10px;
+      border: 1px solid #2c3a3d;
+      background: rgba(255,255,255,.02);
+      border-radius: 10px;
+      padding: 8px 9px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .notif strong { color: var(--text); }
+    .notif.warn {
+      border-style:dashed;
+      border-color:#3a3b2f;
+      background:rgba(214,179,125,.05);
+      color:#dcc8a6;
+    }
+    .notif.err {
+      border-style:dashed;
+      border-color:#3a2f2f;
+      background:rgba(209,151,151,.05);
+      color:#dfb8b8;
     }
     .feed {
-      height: 780px;
+      height: 760px;
       overflow-y: auto;
       padding: 10px;
       background:
-        radial-gradient(circle at 20% -10%, rgba(201, 225, 176, .06), transparent 40%),
-        radial-gradient(circle at 90% 10%, rgba(215, 180, 123, .05), transparent 35%),
+        radial-gradient(circle at 15% -10%, rgba(201,225,176,.06), transparent 42%),
+        radial-gradient(circle at 90% 10%, rgba(215,180,123,.04), transparent 36%),
         #0d1112;
     }
     .feed::-webkit-scrollbar { width: 10px; }
     .feed::-webkit-scrollbar-thumb { background: #273033; border-radius: 8px; }
+
     .card {
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px;
-      margin: 0 0 10px;
+      background: linear-gradient(180deg,var(--panel),var(--panel-2));
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      margin-bottom:10px;
     }
-    .card .meta {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
+    .meta {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:var(--muted);
+      font-size:10px;
+      margin-bottom:7px;
+      text-transform:uppercase;
+      letter-spacing:.5px;
     }
-    .card h2 {
-      margin: 0 0 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
+    .divider {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin:12px 2px 10px;
+      color:var(--muted);
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:.9px;
     }
-    .card p {
-      margin: 0;
-      font-size: 12px;
-      line-height: 1.45;
+    .divider::before,.divider::after {
+      content:"";
+      flex:1;
+      height:1px;
+      background:#223033;
     }
-    .thread { padding: 8px 0 2px; }
+    .thread { padding-top:2px; }
     .msg {
-      margin: 0 0 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      max-width: 92%;
+      margin:0 0 8px;
+      max-width:92%;
+      display:flex;
+      flex-direction:column;
+      gap:3px;
     }
-    .msg .name { font-size: 10px; color: var(--muted); }
+    .msg .name {
+      font-size:10px;
+      color:var(--muted);
+    }
     .bubble {
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      font-size: 12px;
-      line-height: 1.35;
-      background: rgba(255,255,255,.02);
-      white-space: pre-wrap;
+      font-size:12px;
+      line-height:1.35;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      white-space:pre-wrap;
     }
-    .msg.you { margin-left: auto; align-items: flex-end; }
+    .msg.you {
+      margin-left:auto;
+      align-items:flex-end;
+    }
     .msg.you .bubble {
-      background: rgba(178, 201, 176, .08);
+      background: rgba(178,201,176,.08);
       border-color: #33413f;
     }
-    .msg.sam .bubble { background: rgba(255,255,255,.015); }
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 12px 2px 10px;
-      color: var(--muted);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .9px;
+    .row {
+      padding:7px 0;
+      border-top:1px solid rgba(255,255,255,.04);
+      font-size:12px;
+      line-height:1.35;
     }
-    .divider::before, .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #223033;
+    .row:first-child { border-top:0; }
+    .sub {
+      margin-top:2px;
+      font-size:10px;
+      color:var(--muted);
     }
-    .notif {
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px dashed #304043;
-      background: rgba(214, 179, 125, .05);
-      font-size: 11px;
-      color: #d9c3a0;
-      margin-bottom: 10px;
-    }
-    .search-item, .note-line, .news-item {
-      padding: 7px 8px;
-      border-top: 1px solid rgba(255,255,255,.04);
-      font-size: 12px;
-    }
-    .search-item:first-of-type,
-    .note-line:first-of-type,
-    .news-item:first-of-type { border-top: 0; }
-    .sub { color: var(--muted); font-size: 10px; margin-top: 2px; }
-    .gallery {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-top: 6px;
-    }
-    .ph {
-      aspect-ratio: 1.1;
-      border-radius: 10px;
-      border: 1px solid #2a3336;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
-        radial-gradient(circle at 70% 20%, rgba(229, 215, 147, .15), transparent 45%),
-        radial-gradient(circle at 20% 80%, rgba(124, 154, 136, .12), transparent 55%),
-        #11181a;
-      position: relative;
-      overflow: hidden;
-    }
-    .ph::after {
-      content: attr(data-label);
-      position: absolute;
-      left: 8px;
-      bottom: 6px;
-      font-size: 10px;
-      color: rgba(219,227,225,.8);
-      letter-spacing: .2px;
-    }
-    .tiny {
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: 5px;
-    }
-    .sticky {
-      border-left: 3px solid var(--warning);
-      padding-left: 8px;
+    .note {
+      border-left:3px solid var(--warn);
+      padding-left:8px;
+      font-size:12px;
+      line-height:1.45;
+      white-space:pre-wrap;
     }
     .footer-space { height: 8px; }
   </style>
@@ -200,129 +182,120 @@
 <body>
   <div class="phone">
     <div class="status">
-      <span>03:12</span>
-      <span>Night Shift • Low Power</span>
-      <span>17%</span>
+      <span>03:18</span>
+      <span>Weak signal</span>
+      <span>16%</span>
     </div>
-    <div class="header">
-      <h1>Personal Feed</h1>
-      <p>In-world fragments • swipe/scroll • subtle clues</p>
+
+    <div class="lock">
+      <div class="time">03:18</div>
+      <div class="date">Thursday • Heavy rain warning</div>
+      <div class="notif"><strong>Sam</strong> • Can you just answer me</div>
+      <div class="notif err"><strong>Natwest</strong> • Card payment declined • retry available</div>
+      <div class="notif warn"><strong>Battery Health</strong> • Service recommended</div>
+      <div class="notif"><strong>Missed call</strong> • No Caller ID • 02:41</div>
     </div>
+
     <div class="feed">
-      <div class="notif">Missed call (1): <strong>Sam</strong> • 01:47</div>
+      <div class="divider">Messages</div>
 
       <div class="card">
-        <div class="meta"><span>Messages</span><span>Sam • Yesterday</span></div>
+        <div class="meta"><span>Sam</span><span>Today</span></div>
         <div class="thread">
-          <div class="msg sam">
-            <div class="name">Sam</div>
-            <div class="bubble">You don’t need to explain it again.</div>
-          </div>
-          <div class="msg sam">
-            <div class="name">Sam</div>
-            <div class="bubble">I said I heard you.</div>
-          </div>
-          <div class="msg you">
-            <div class="name">You</div>
-            <div class="bubble">I wasn’t shouting.</div>
-          </div>
-          <div class="msg sam">
-            <div class="name">Sam</div>
-            <div class="bubble">Okay.</div>
-          </div>
-          <div class="msg sam">
-            <div class="name">Sam</div>
-            <div class="bubble">I’m at Mum’s for a bit. Feed the plant if you remember.</div>
-          </div>
+          <div class="msg"><div class="name">Sam</div><div class="bubble">I'll speak to you when the suns up</div></div>
+          <div class="msg"><div class="name">Sam</div><div class="bubble">?????</div></div>
+          <div class="msg you"><div class="name">You</div><div class="bubble">On shift</div></div>
+          <div class="msg"><div class="name">Sam</div><div class="bubble">I know ur on shift.</div></div>
+          <div class="msg"><div class="name">Sam</div><div class="bubble">I'll be at my mums when you get home</div></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="meta"><span>Search</span><span>Recent</span></div>
-        <div class="search-item">how long does adrenalin stay in your body<div class="sub">1:13 AM</div></div>
-        <div class="search-item">can you crack a phone screen by throwing keys<div class="sub">1:16 AM</div></div>
-        <div class="search-item">night shift sleep getting angry<div class="sub">1:22 AM</div></div>
-        <div class="search-item">petrol station flowers open 24 hours near me<div class="sub">1:28 AM</div></div>
-      </div>
-
-      <div class="divider">Local noise</div>
-
-      <div class="card">
-        <div class="meta"><span>Community Group</span><span>Bresten Local / 02:04</span></div>
-        <h2>Road by the retail park flooded again</h2>
-        <p>Thread’s full of dashcam clips and people arguing about whose fault weather is.</p>
-        <div class="tiny">Top comment preview: “Council can’t even clear drains but they can paint new lines.”</div>
-      </div>
-
-      <div class="card">
-        <div class="meta"><span>Saved Post</span><span>Video • not played</span></div>
-        <h2>“Routine. Sleep. Discipline.”</h2>
-        <p>Thumbnail only. A man in a fitted quarter-zip pointing at a whiteboard. You saved it at 03:51 a week ago and never opened it.</p>
-      </div>
-
-      <div class="card">
-        <div class="meta"><span>Notes</span><span>Untitled</span></div>
-        <h2 class="sticky">draft</h2>
-        <div class="note-line">need to stop doing the thing where i go quiet then go loud</div>
-        <div class="note-line">night makes everything feel deserved</div>
-        <div class="note-line">buy card (not funny one)</div>
-        <div class="note-line">say sorry without “but”</div>
-      </div>
-
-      <div class="divider">Work fragments</div>
-
-      <div class="card">
-        <div class="meta"><span>Photos</span><span>Camera Roll • 4 items</span></div>
-        <h2>Unsent / work</h2>
-        <p>Accidental pocket snaps and late-shift evidence. Nothing framed properly.</p>
-        <div class="gallery">
-          <div class="ph" data-label="break-room notice"></div>
-          <div class="ph" data-label="wet floor by tills"></div>
-          <div class="ph" data-label="receipt in Kev's bin"></div>
-          <div class="ph" data-label="back door keypad"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="meta"><span>Voice Memo Transcript</span><span>Auto text • 00:41</span></div>
-        <h2>car park</h2>
-        <p>[wind / rain] ...you can’t just stand there like that... I’m working... no, don’t start... I said I’m working.</p>
-        <div class="tiny">Transcript confidence: low</div>
-      </div>
-
-      <div class="card">
-        <div class="meta"><span>News</span><span>For You</span></div>
-        <div class="news-item">Cost of living rises again as overnight workers report worse sleep and mental health<div class="sub">long read • opened 12%</div></div>
-        <div class="news-item">Retail chain to trial “frictionless” tills in more stores<div class="sub">shared by no one you know</div></div>
-        <div class="news-item">Opinion: We keep calling burnout a personal failure<div class="sub">saved</div></div>
-      </div>
-
-      <div class="card">
-        <div class="meta"><span>Messages</span><span>Sam • 3 weeks ago</span></div>
+        <div class="meta"><span>Mum</span><span>Yesterday</span></div>
         <div class="thread">
-          <div class="msg sam">
-            <div class="name">Sam</div>
-            <div class="bubble">Can you stop bringing work home in your head</div>
-          </div>
-          <div class="msg you">
-            <div class="name">You</div>
-            <div class="bubble">I leave at 7 and still feel like i’m there at 11</div>
-          </div>
-          <div class="msg sam">
-            <div class="name">Sam</div>
-            <div class="bubble">I know. I’m not your manager. I’m on your side.</div>
-          </div>
+          <div class="msg"><div class="name">Mum</div><div class="bubble">You doing those nights again?</div></div>
+          <div class="msg"><div class="name">Mum</div><div class="bubble">No pressure. Just asking because your uncle keeps asking after you.</div></div>
+          <div class="msg you"><div class="name">You</div><div class="bubble">Yeah</div></div>
+          <div class="msg"><div class="name">Mum</div><div class="bubble">Alright. Maybe we can see you soon.</div></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="meta"><span>Shopping</span><span>Basket (unsent)</span></div>
-        <h2>Late-night cart</h2>
-        <p>Birthday card, cheap flowers, plasters, paracetamol, dishwasher tablets.</p>
-        <div class="tiny">Last edited: 00:58 • checkout not completed</div>
+        <div class="meta"><span>Work Group</span><span>Muted</span></div>
+        <div class="thread">
+          <div class="msg"><div class="name">Mick</div><div class="bubble">Anyone cover Fri day shift</div></div>
+          <div class="msg"><div class="name">Leanne</div><div class="bubble">Can’t. Kids.</div></div>
+          <div class="msg"><div class="name">Brian Work</div><div class="bubble">Need one answer by 9am pls</div></div>
+        </div>
       </div>
 
-      <div class="notif">New notification: <strong>Battery health warning</strong> • “Service recommended”</div>
+      <div class="divider">Searches</div>
+      <div class="card">
+        <div class="meta"><span>Recent</span><span>Private</span></div>
+        <div class="row">how long does adrenalin stay in your body<div class="sub">01:13</div></div>
+        <div class="row">night shift can mess your mood up<div class="sub">01:22</div></div>
+        <div class="row">day jobs no experience<div class="sub">01:25</div></div>
+        <div class="row">is sleeping at 8am bad for your heart<div class="sub">01:31</div></div>
+      </div>
+
+      <div class="divider">News</div>
+      <div class="card">
+        <div class="meta"><span>Headlines</span><span>Unread</span></div>
+        <div class="row">Cost of living rises again as overnight workers report worse sleep and mental health<div class="sub">Long read • opened 12%</div></div>
+        <div class="row">Retail chain to expand smart self-checkout overnight trial<div class="sub">Staff consultation delayed</div></div>
+        <div class="row">Four day weekends and remote jobs for the lazy wokerati<div class="sub">Saved</div></div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Local updates</span><span>02:06</span></div>
+        <div class="row">Retail park road flooded again after drain overflow<div class="sub">Traffic slow near service lane</div></div>
+        <div class="row">Residents group argues over late-night noise after seafront dispersal<div class="sub">92 comments</div></div>
+      </div>
+
+      <div class="divider">Community</div>
+      <div class="card">
+        <div class="meta"><span>Neighbourhood group</span><span>Muted</span></div>
+        <div class="row">POST: Anyone else hear shouting by the shops most nights now?<div class="sub">Seen by you • no reply</div></div>
+        <div class="row">POST: Found keys by the launderette, red lanyard<div class="sub">2 photos attached</div></div>
+        <div class="row">POST: Flooded underpass again. Don’t take a low car through it.<div class="sub">Pinned by admin</div></div>
+      </div>
+
+      <div class="divider">Notes</div>
+      <div class="card">
+        <div class="meta"><span>Notes</span><span>Unsaved edits</span></div>
+        <div class="note">bin bags
+toilet roll  
+butter  
+coffee 
+flowers
+blue tablets
+
+switch sleep back before monday
+call mum back 
+14th josh bday 
+door code 2580
+call Sam before bed</div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Draft</span><span>Unsent</span></div>
+        <div class="row">I’m not angry I’m just<div class="sub">Messages draft</div></div>
+      </div>
+
+      <div class="divider">System</div>
+      <div class="card">
+        <div class="meta"><span>Device</span><span>Weekly</span></div>
+        <div class="row">Screen Time was up 67% last week<div class="sub">Most used between 1 AM and 5 AM</div></div>
+        <div class="row">Alarm skipped: 14:30<div class="sub">Tue, Wed</div></div>
+        <div class="row">Storage nearly full<div class="sub">System + messages</div></div>
+      </div>
+
+      <div class="card">
+        <div class="meta"><span>Reminders</span><span>Overdue</span></div>
+        <div class="row">Dentist appointment<div class="sub">Yesterday, 11:10</div></div>
+        <div class="row">Pay electric<div class="sub">2 days ago</div></div>
+      </div>
+
       <div class="footer-space"></div>
     </div>
   </div>
